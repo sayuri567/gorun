@@ -100,8 +100,8 @@ func (this *GoRun) runLimitRoutine(r *routine) {
 	if this.isBlock && this.limitCh != nil {
 		this.limitCh <- struct{}{}
 	}
-	go func(r *routine) {
-		if this.limitCh != nil {
+	if this.limitCh != nil {
+		go func(r *routine) {
 			if !this.isBlock {
 				this.limitCh <- struct{}{}
 			}
@@ -111,10 +111,10 @@ func (this *GoRun) runLimitRoutine(r *routine) {
 			case <-ctx.Done():
 				<-this.limitCh
 			}
-		} else {
-			this.run(r.function, nil, r.params...)
-		}
-	}(r)
+		}(r)
+	} else {
+		this.run(r.function, nil, r.params...)
+	}
 }
 
 func (this *GoRun) init() {
