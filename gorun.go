@@ -97,10 +97,10 @@ func (this *GoRun) run(function interface{}, cancelFunc context.CancelFunc, para
 }
 
 func (this *GoRun) runLimitRoutine(r *routine) {
-	if this.isBlock && this.limitCh != nil {
-		this.limitCh <- struct{}{}
-	}
 	if this.limitCh != nil {
+		if this.isBlock {
+			this.limitCh <- struct{}{}
+		}
 		go func(r *routine) {
 			if !this.isBlock {
 				this.limitCh <- struct{}{}
